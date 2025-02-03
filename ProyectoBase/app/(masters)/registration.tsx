@@ -11,6 +11,16 @@ export default function App() {
       console.log(`El contador cambió: ${contador}`);
     }, [contador]);
   
+    // Ejercicio 3: Reloj en tiempo real (useEffect con setInterval)
+  const [hora, setHora] = useState(new Date());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHora(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+    
 
   return (
     <View style={styles.container}>
@@ -38,6 +48,10 @@ export default function App() {
       <Button title="Incrementar" onPress={() => setContador(contador + 1)} />
       <Text style={styles.message}>Contador: {contador}</Text>
       {contador % 5 === 0 && contador !== 0 && <Text style={styles.alert}>Ha alcanzado un múltiplo de 5</Text>}
+
+      {/* Ejercicio 3 */}
+      <Text style={styles.title}>Reloj Digital</Text>
+      <Text style={styles.clock}>{hora.toLocaleTimeString()}</Text>
 
 
 
