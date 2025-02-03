@@ -1,122 +1,40 @@
-import { useState } from "react";
-import { ScrollView, Text, StyleSheet, TextInput,Button } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function RegistrationScreen() {
-    const [formulario, setFormulario] = useState({
-        nombre: 'prueba',
-        apellido: 'test',
-        correo: '',
-        telefono: '1234',
-        password: '',
-        confirmarPassword: '',
-    });
+export default function App() {
+  // Ejercicio 1: Manejo de estado con useState
+  const [usuario, setUsuario] = useState({ nombre: '', edad: '' });
 
-    const [errores, setErrores] = useState({
-        nombre: 'prueba',
-        apellido: 'test',
-        correo: '',
-        telefono: '1234',
-        password: '',
-        confirmarPassword: '',
-    });
+  return (
+    <View style={styles.container}>
+      {/* Ejercicio 1 */}
+      <Text style={styles.title}>Formulario</Text>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Nombre" 
+        value={usuario.nombre} 
+        onChangeText={(text) => setUsuario({ ...usuario, nombre: text })} 
+      />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Edad" 
+        keyboardType="numeric" 
+        value={usuario.edad} 
+        onChangeText={(text) => {
+          if (/^\d*$/.test(text)) setUsuario({ ...usuario, edad: text });
+        }}
+      />
+      <Text style={styles.message}>Hola, {usuario.nombre}. Tienes {usuario.edad} años.</Text>
 
-    const manejarCambio = (campo: string, valor: string) => {
-        setFormulario((prevFormulario) => ({
-            ...prevFormulario,
-            [campo]: valor,
-        }));
-    };
-    const validarFormulario = () =>{
-        
-    };
-
-    const manejarRegistro = () =>{
-
-    };
-
-    return(
-    <ScrollView contentContainerStyle={styles.container}>
-        <Text>Registro</Text>
-        <Text style={styles.label}>
-            Nombre:
-        </Text>
-
-        <TextInput
-            style={styles.input}
-            placeholder="Ingrese su nombre"
-            value={formulario.nombre}
-            onChangeText={(texto) => { manejarCambio('nombre', texto) }}
-        />
-        <Text style={styles.label}>
-            Apellido:
-        </Text>
-        <TextInput
-            style={styles.input}
-            placeholder="Ingrese su apellido"
-            value={formulario.apellido}
-            onChangeText={(texto) => { manejarCambio('apellido', texto) }}
-        />
-        <Text style={styles.label}>Correo Electronico: </Text>
-        <TextInput
-            style={styles.input}
-            placeholder="Ingrese su correo"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={formulario.correo}
-            onChangeText={(texto) => { manejarCambio('correo', texto) }}
-        />
-
-        <Text>Numero telefonico: </Text>
-        <TextInput
-            style={styles.input}
-            placeholder="Ingrese su numero telefonico"
-            keyboardType="phone-pad"
-            maxLength={8}
-            value={formulario.telefono}
-            onChangeText={(texto) => { manejarCambio('telefono', texto) }}
-        />
-
-        <Text>Contraseña: </Text>
-        <TextInput 
-         style={styles.input}
-         placeholder="Ingrese su contraseña"
-         secureTextEntry
-         value={formulario.password}
-        onChangeText={(texto) => { manejarCambio('password', texto) }}
-        />
-
-        <Text>Confirmar contraseña: </Text>
-        <TextInput 
-         style={styles.input}
-         placeholder="Confirme su contraseña"
-         secureTextEntry
-         value={formulario.confirmarPassword}
-        onChangeText={(texto) => { manejarCambio('confirmarPassword', texto) }}
-        />
-
-        <Button title="Registrarse" onPress={manejarRegistro} />
-
-    </ScrollView>
-    );
-
-};
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        padding: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    input: {
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        marginBottom: 10,
-    }
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
+  input: { width: '80%', borderWidth: 1, padding: 10, marginVertical: 5, borderRadius: 5 },
+  message: { fontSize: 16, marginVertical: 5 },
+  alert: { fontSize: 16, color: 'red', fontWeight: 'bold' },
+  clock: { fontSize: 24, fontWeight: 'bold', marginVertical: 10 }
 });
