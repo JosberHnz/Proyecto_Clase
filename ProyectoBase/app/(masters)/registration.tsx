@@ -20,7 +20,14 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-    
+      // Ejercicio 4: Simulación de carga (useEffect con setTimeout)
+  const [cargando, setCargando] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCargando(false);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,7 +60,9 @@ export default function App() {
       <Text style={styles.title}>Reloj Digital</Text>
       <Text style={styles.clock}>{hora.toLocaleTimeString()}</Text>
 
-
+      {/* Ejercicio 4 */}
+      <Text style={styles.title}>Pantalla de Carga</Text>
+      <Text style={styles.message}>{cargando ? 'Cargando...' : 'Bienvenido a la aplicación'}</Text>
 
     </View>
   );
