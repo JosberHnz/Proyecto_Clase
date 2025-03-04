@@ -28,7 +28,7 @@ export default function HomeScreen() {
       <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => router.push("/tabs/register")}
+          onPress={() => router.push("/register")}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >
@@ -52,7 +52,7 @@ export default function HomeScreen() {
       <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
         <TouchableOpacity 
           style={styles.logoutButton} 
-          onPress={() => { logout(); router.replace("/tabs/login"); }}
+          onPress={() => { logout(); router.replace("/login"); }}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >

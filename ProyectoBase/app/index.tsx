@@ -15,7 +15,7 @@ export default function Index() {
 
     useEffect(() => {
         if (isMounted) {
-            router.replace(user ? '/home' : '/tabs/login');
+            router.replace(user ? '/home' : '/login');
         }
     }, [isMounted])
     return (

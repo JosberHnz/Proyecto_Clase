@@ -17,7 +17,7 @@ export default function LoginScreen() {
   return (
     <View style={[themeStyles.container, styles.container]}>
       <Image
-        source={require("../../assets/images/profilepic.jpg")}
+        source={require("../assets/images/profilepic.jpg")}
         style={styles.avatar}
       />
       <Text style={themeStyles.title}>{i18n.t("welcome")}</Text>
@@ -44,7 +44,7 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Ingresar con Google</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/tabs/register")}>
+      <TouchableOpacity onPress={() => router.push("/register")}>
         <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
 
