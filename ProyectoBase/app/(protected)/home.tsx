@@ -28,7 +28,7 @@ export default function HomeScreen() {
       <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => router.push("/register")}
+          onPress={() => router.push("/tabs/profile")}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
         >
