@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Equipo {
@@ -10,57 +10,46 @@ interface Equipo {
   motivoBaja?: string;
 }
 
-export default function Reportes({ navigation }: { navigation: any }) {
-  const [reportes, setReportes] = useState<Equipo[]>([]);
-  const [equipos, setEquipos] = useState<Equipo[]>([]);
+export default function Reportes() {
+  const [totalEquipos, setTotalEquipos] = useState(0);
+  const [equiposLaptops, setEquiposLaptops] = useState(0);
+  const [equiposDesktop, setEquiposDesktop] = useState(0);
+  const [equiposImpresoras, setEquiposImpresoras] = useState(0);
+  const [equiposBaja, setEquiposBaja] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
-      const reportesData = await AsyncStorage.getItem('reportes');
-      const equiposData = await AsyncStorage.getItem('equipos');
-      
-      if (reportesData) {
-        setReportes(JSON.parse(reportesData));
-      }
-      
-      if (equiposData) {
-        setEquipos(JSON.parse(equiposData));
+      try {
+        const equiposData = await AsyncStorage.getItem('equipos');
+        const reportesData = await AsyncStorage.getItem('reportes');
+
+        const equipos: Equipo[] = equiposData ? JSON.parse(equiposData) : [];
+        const reportes: Equipo[] = reportesData ? JSON.parse(reportesData) : [];
+
+        setTotalEquipos(equipos.length);
+        setEquiposLaptops(equipos.filter(eq => eq.tipo === 'Laptop').length);
+        setEquiposDesktop(equipos.filter(eq => eq.tipo === 'Desktop').length);
+        setEquiposImpresoras(equipos.filter(eq => eq.tipo === 'Impresora').length);
+        setEquiposBaja(reportes.filter(eq => eq.motivoBaja).length);
+      } catch (error) {
+        console.error('Error cargando datos:', error);
       }
     };
 
     loadData();
   }, []);
 
-  const filtrarEquiposPorTipo = (tipo: string) => {
-    return equipos.filter((eq: Equipo) => eq.tipo === tipo);
-  };
-
-  const equiposDadosDeBaja = () => {
-    const equiposBaja = reportes.filter((eq: Equipo) => eq.motivoBaja);
-    Alert.alert('Equipos Dados de Baja', JSON.stringify(equiposBaja, null, 2));
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Reportes Generales</Text>
       
-      <Button title="Equipos Dados de Baja" onPress={equiposDadosDeBaja} />
-      <Button title="Equipos Laptops" onPress={() => {
-        const laptops = filtrarEquiposPorTipo('Laptop');
-        Alert.alert('Laptops', JSON.stringify(laptops, null, 2));
-      }} />
-      <Button title="Equipos Desktop" onPress={() => {
-        const desktops = filtrarEquiposPorTipo('Desktop');
-        Alert.alert('Desktop', JSON.stringify(desktops, null, 2));
-      }} />
-      <Button title="Equipos Impresoras" onPress={() => {
-        const impresoras = filtrarEquiposPorTipo('Impresora');
-        Alert.alert('Impresoras', JSON.stringify(impresoras, null, 2));
-      }} />
-      <Button title="Número Total de Equipos" onPress={() => Alert.alert('Total Equipos', `${equipos.length}`)} />
-      <Button title="Número de Equipos Dados de Baja" onPress={() => Alert.alert('Total Equipos Dados de Baja', `${reportes.filter((eq: Equipo) => eq.motivoBaja).length}`)} />
-
-      <Button title="Volver al Menú Principal" onPress={() => navigation.navigate('MenuPrincipal')} />
+      <View style={styles.card}>
+        <Text style={styles.info}>📦 Equipos en Inventario: {totalEquipos}</Text>
+        <Text style={styles.info}>💻 Laptops: {equiposLaptops}</Text>
+        <Text style={styles.info}>🖥️ Desktops: {equiposDesktop}</Text>
+        <Text style={styles.info}>🖨️ Impresoras: {equiposImpresoras}</Text>
+        <Text style={styles.info}>🗑️ Equipos Dados de Baja: {equiposBaja}</Text>
+      </View>
     </View>
   );
 }
@@ -70,6 +59,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#f4f4f4',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   header: {
     fontSize: 24,
@@ -77,5 +68,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  card: {
+    width: '90%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  info: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
 });
-
