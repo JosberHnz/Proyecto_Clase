@@ -1,165 +1,178 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, FlatList, TextInput, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Mantenimientos() {
-  const [serviceTag, setServiceTag] = useState('');
-  const [fechaMantenimiento, setFechaMantenimiento] = useState('');
-  const [tipoMantenimiento, setTipoMantenimiento] = useState('');
+interface Equipo {
+  tipo: string;
+  marca: string;
+  modelo: string;
+  serviceTag: string;
+  sistemaOperativo: string;
+  memoriaRAM: string;
+  discoDuro: string;
+  procesador: string;
+  departamento: string;
+  usuario: string;
+  estado: string;
+  observaciones: string;
+}
+
+interface Mantenimiento {
+  serviceTag: string;
+  fecha: string;
+  tipo: string;
+  responsable: string;
+  observaciones: string;
+}
+
+export default function Mantenimientos({ navigation }: { navigation: any }) {
+  const [equipos, setEquipos] = useState<Equipo[]>([]);
+  const [mantenimientos, setMantenimientos] = useState<Mantenimiento[]>([]);
+  const [selectedEquipo, setSelectedEquipo] = useState<Equipo | null>(null);
+  const [fecha, setFecha] = useState('');
+  const [tipo, setTipo] = useState('');
   const [responsable, setResponsable] = useState('');
   const [observaciones, setObservaciones] = useState('');
 
-  const handleBuscarEquipo = () => {
-    if (serviceTag.trim() === '') {
-      Alert.alert('Error', 'Ingrese un Service Tag para buscar.');
-      return;
-    }
+  useEffect(() => {
+    const loadEquipos = async () => {
+      const equiposData = await AsyncStorage.getItem('equipos');
+      const mantenimientosData = await AsyncStorage.getItem('mantenimientos');
+      if (equiposData) setEquipos(JSON.parse(equiposData));
+      if (mantenimientosData) setMantenimientos(JSON.parse(mantenimientosData));
+    };
+    loadEquipos();
+  }, []);
 
-    // Simulación de búsqueda en inventario (aquí deberías conectar con tu base de datos)
-    Alert.alert('Equipo Encontrado', `Datos del equipo con Service Tag: ${serviceTag}`);
+  const agregarMantenimiento = async () => {
+    if (selectedEquipo && fecha && tipo && responsable) {
+      try {
+        const mantenimientoExistente = mantenimientos.find(
+          (m) => m.serviceTag === selectedEquipo.serviceTag
+        );
+
+        let nuevaListaMantenimientos: Mantenimiento[];
+        
+        if (mantenimientoExistente) {
+          const mantenimientoActualizado = {
+            ...mantenimientoExistente,
+            fecha,
+            tipo,
+            responsable,
+            observaciones,
+          };
+          nuevaListaMantenimientos = mantenimientos.map((m) =>
+            m.serviceTag === selectedEquipo.serviceTag ? mantenimientoActualizado : m
+          );
+        } else {
+          const nuevoMantenimiento: Mantenimiento = {
+            serviceTag: selectedEquipo.serviceTag,
+            fecha,
+            tipo,
+            responsable,
+            observaciones,
+          };
+          nuevaListaMantenimientos = [...mantenimientos, nuevoMantenimiento];
+        }
+
+        setMantenimientos(nuevaListaMantenimientos);
+        await AsyncStorage.setItem('mantenimientos', JSON.stringify(nuevaListaMantenimientos));
+
+        Alert.alert('Mantenimiento agregado exitosamente');
+        
+        setFecha('');
+        setTipo('');
+        setResponsable('');
+        setObservaciones('');
+        setSelectedEquipo(null);
+      } catch (error) {
+        Alert.alert('Error al guardar el mantenimiento');
+      }
+    } else {
+      Alert.alert('Por favor, complete todos los campos obligatorios.');
+    }
   };
 
-  const handleGuardarMantenimiento = () => {
-    if (!serviceTag || !fechaMantenimiento || !tipoMantenimiento || !responsable) {
-      Alert.alert('Error', 'Todos los campos son obligatorios.');
-      return;
-    }
-
-    console.log({
-      serviceTag,
-      fechaMantenimiento,
-      tipoMantenimiento,
-      responsable,
-      observaciones
-    });
-
-    Alert.alert('Éxito', 'Mantenimiento guardado correctamente.');
-  };
+  const renderItem = ({ item }: { item: Equipo }) => (
+    <View style={styles.equipoItem}>
+      <Text>{item.tipo} - {item.marca} - {item.modelo} - {item.serviceTag}</Text>
+      <Button title="Seleccionar" onPress={() => setSelectedEquipo(item)} />
+    </View>
+  );
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>🔧 Mantenimientos de Equipos</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Mantenimiento de Equipos</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>Buscar equipo por Service Tag</Text>
-        <View style={styles.row}>
+      <FlatList
+        data={equipos}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.serviceTag}
+      />
+
+      {selectedEquipo && (
+        <View>
+          <Text style={styles.header}>Registrar Mantenimiento</Text>
           <TextInput
-            style={[styles.input, styles.inputShort]}
-            placeholder="Ingrese Service Tag"
-            value={serviceTag}
-            onChangeText={setServiceTag}
+            style={styles.input}
+            placeholder="Fecha (DD/MM/AAAA)"
+            value={fecha}
+            onChangeText={setFecha}
           />
-          <TouchableOpacity style={styles.searchButton} onPress={handleBuscarEquipo}>
-            <Text style={styles.buttonText}>🔎 Buscar</Text>
-          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="Tipo de Mantenimiento"
+            value={tipo}
+            onChangeText={setTipo}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Responsable"
+            value={responsable}
+            onChangeText={setResponsable}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Observaciones"
+            value={observaciones}
+            onChangeText={setObservaciones}
+          />
+          <Button title="Guardar Mantenimiento" onPress={agregarMantenimiento} />
         </View>
-      </View>
+      )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Fecha de Mantenimiento (dd/mm/yyyy)"
-        value={fechaMantenimiento}
-        onChangeText={setFechaMantenimiento}
-        keyboardType="numeric"
-      />
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Tipo de Mantenimiento</Text>
-        <View style={styles.pickerContainer}>
-          <Picker selectedValue={tipoMantenimiento} onValueChange={setTipoMantenimiento} style={styles.picker}>
-            <Picker.Item label="Seleccione un tipo" value="" />
-            <Picker.Item label="Preventivo" value="Preventivo" />
-            <Picker.Item label="Correctivo" value="Correctivo" />
-          </Picker>
-        </View>
-      </View>
-
-      <TextInput style={styles.input} placeholder="Responsable del Mantenimiento" value={responsable} onChangeText={setResponsable} />
-
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Observaciones"
-        value={observaciones}
-        onChangeText={setObservaciones}
-        multiline
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleGuardarMantenimiento}>
-        <Text style={styles.buttonText}>💾 Guardar Mantenimiento</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      <Button title="Volver al Menú Principal" onPress={() => navigation.navigate('MenuPrincipal')} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
     padding: 20,
+    backgroundColor: '#f4f4f4',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
-  },
-  section: {
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#555',
-    marginBottom: 5,
+    textAlign: 'center',
   },
   input: {
-    height: 45,
+    height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 10,
+    borderRadius: 5,
     marginBottom: 10,
+    paddingLeft: 8,
+    backgroundColor: '#fff',
   },
-  inputShort: {
-    flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  searchButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    marginLeft: 10,
-  },
-  pickerContainer: {
+  equipoItem: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: '#fff',
+    borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 45,
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: 'top',
-  },
-  button: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: 'bold',
   },
 });
