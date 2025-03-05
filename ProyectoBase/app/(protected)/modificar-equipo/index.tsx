@@ -14,7 +14,6 @@ interface Equipo {
   departamento: string;
   usuario: string;
   estado: string;
-  fechaMantenimiento: string;
   observaciones: string;
 }
 
@@ -131,12 +130,6 @@ export default function ModificarEquipo() {
         placeholder="Estado"
         value={equipo.estado}
         onChangeText={(text) => setEquipo({ ...equipo, estado: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Fecha de Mantenimiento"
-        value={equipo.fechaMantenimiento}
-        onChangeText={(text) => setEquipo({ ...equipo, fechaMantenimiento: text })}
       />
       <TextInput
         style={styles.input}

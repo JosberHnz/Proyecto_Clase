@@ -15,7 +15,6 @@ interface Equipo {
   departamento: string;
   usuario: string;
   estado: string;
-  fechaMantenimiento: string;
   observaciones: string;
 }
 
@@ -32,7 +31,6 @@ export default function AgregarEquipo({ navigation }: any) {
     departamento: '',
     usuario: '',
     estado: '',
-    fechaMantenimiento: '',
     observaciones: '',
   });
 
@@ -57,7 +55,6 @@ export default function AgregarEquipo({ navigation }: any) {
         serviceTag: '',
         departamento: '',
         estado: '',
-        fechaMantenimiento: '',
         observaciones: '',
         sistemaOperativo: '',
         memoriaRAM: '',
@@ -95,7 +92,6 @@ export default function AgregarEquipo({ navigation }: any) {
         <TextInput style={styles.input} placeholder="Departamento" value={equipo.departamento} onChangeText={(text) => handleChange('departamento', text)} />
         <TextInput style={styles.input} placeholder="Usuario" value={equipo.usuario} onChangeText={(text) => handleChange('usuario', text)} />
         <TextInput style={styles.input} placeholder="Estado" value={equipo.estado} onChangeText={(text) => handleChange('estado', text)} />
-        <TextInput style={styles.input} placeholder="Fecha de Mantenimiento" value={equipo.fechaMantenimiento} onChangeText={(text) => handleChange('fechaMantenimiento', text)} />
         <TextInput style={styles.input} placeholder="Observaciones" value={equipo.observaciones} onChangeText={(text) => handleChange('observaciones', text)} />
 
         <Button title="Guardar" onPress={guardarEquipo} />

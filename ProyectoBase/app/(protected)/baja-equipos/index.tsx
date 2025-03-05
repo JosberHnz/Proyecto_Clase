@@ -14,7 +14,6 @@ interface Equipo {
   departamento: string;
   usuario: string;
   estado: string;
-  fechaMantenimiento: string;
   observaciones: string;
 }
 

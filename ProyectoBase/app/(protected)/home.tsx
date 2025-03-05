@@ -64,19 +64,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Botón Agregar Incidente */}
-        <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => router.push("/agregar-equipo")}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-          >
-            <Ionicons name="add-circle-outline" size={28} color="white" />
-            <Text style={styles.buttonText}>Agregar Incidente</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
         {/* Botón Asignar Equipo */}
         <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
           <TouchableOpacity 
