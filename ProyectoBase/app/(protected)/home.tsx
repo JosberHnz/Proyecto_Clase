@@ -116,19 +116,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Botón Buscar Equipos */}
-        <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => router.push("/buscar-equipo")}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-          >
-            <Ionicons name="search-outline" size={28} color="white" />
-            <Text style={styles.buttonText}>Buscar Equipos</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
         {/* Botón Mantenimientos */}
         <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
           <TouchableOpacity 
@@ -152,19 +139,6 @@ export default function HomeScreen() {
           >
             <Ionicons name="create-outline" size={28} color="white" />
             <Text style={styles.buttonText}>Modificar Equipos</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
-        {/* Botón Salida Activos */}
-        <Animated.View style={[styles.animatedView, { transform: [{ scale }] }]}>
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => router.push("/salida-activos")}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-          >
-            <Ionicons name="exit-outline" size={28} color="white" />
-            <Text style={styles.buttonText}>Salida Activos</Text>
           </TouchableOpacity>
         </Animated.View>
 
