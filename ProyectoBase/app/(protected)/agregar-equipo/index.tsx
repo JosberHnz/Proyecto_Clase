@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface Equipo {
   tipo: string;
@@ -94,7 +95,11 @@ export default function AgregarEquipo({ navigation }: any) {
         <TextInput style={styles.input} placeholder="Estado" value={equipo.estado} onChangeText={(text) => handleChange('estado', text)} />
         <TextInput style={styles.input} placeholder="Observaciones" value={equipo.observaciones} onChangeText={(text) => handleChange('observaciones', text)} />
 
-        <Button title="Guardar" onPress={guardarEquipo} />
+        <Button 
+          title="Guardar" 
+          onPress={guardarEquipo} 
+          color="#4CAF50" 
+        />
       </View>
     </ScrollView>
   );
@@ -134,12 +139,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#666',
   },
   picker: {
     backgroundColor: '#fff',
     marginBottom: 10,
     borderRadius: 5,
     width: '100%',
+    height: 40,
   },
   input: {
     backgroundColor: '#fff',
@@ -149,10 +156,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     width: '100%',
+    fontSize: 16,
   },
 });
-
-
-
-
-
