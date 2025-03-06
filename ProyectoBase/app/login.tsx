@@ -1,18 +1,35 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { darkTheme, lightTheme } from "@/styles/themes";
 import { i18n } from "@/contexts/LanguageContext";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const { login } = useAuth();
   const { theme } = useTheme();
   const themeStyles = theme === "dark" ? darkTheme : lightTheme;
+
+  const handleLogin = async () => {
+    console.log("Verificando correo:", email);
+
+    if (!email.endsWith(".edu")) {
+      setErrorMessage("Solo correos .edu pueden ingresar.");
+      setEmail("");
+      return;
+    }
+
+    try {
+      await login(email);
+      router.replace("/home");
+    } catch (error) {
+      setErrorMessage("No se pudo iniciar sesión. Verifica tu correo.");
+    }
+  };
 
   return (
     <View style={[themeStyles.container, styles.container]}>
@@ -32,7 +49,9 @@ export default function LoginScreen() {
         autoCapitalize="none"
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => { login(email); router.replace("/home"); }}>
+      {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
 
@@ -47,7 +66,6 @@ export default function LoginScreen() {
       <TouchableOpacity onPress={() => router.push("/register")}>
         <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
-
     </View>
   );
 }
@@ -113,5 +131,10 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     marginRight: 10,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 15,
   },
 });
