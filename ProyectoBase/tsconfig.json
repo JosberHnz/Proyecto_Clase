@@ -6,7 +6,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "types": ["react", "react-redux"]
   },
   "include": [
     "**/*.ts",
@@ -15,3 +16,6 @@
     "expo-env.d.ts"
   ]
 }
+
+
+

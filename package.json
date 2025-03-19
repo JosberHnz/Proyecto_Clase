@@ -4,6 +4,7 @@
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/native-stack": "^7.2.0",
+    "@reduxjs/toolkit": "^2.6.1",
     "react-hook-form": "^7.54.2",
     "react-native-gesture-handler": "^2.22.1",
     "react-native-paper": "^5.13.1",
@@ -11,6 +12,11 @@
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": "^4.6.0",
     "react-native-vector-icons": "^10.2.0",
+    "react-redux": "^9.2.0",
     "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-redux": "^7.1.34"
   }
 }
