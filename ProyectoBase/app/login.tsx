@@ -1,10 +1,13 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { darkTheme, lightTheme } from "@/styles/themes";
 import { i18n } from "@/contexts/LanguageContext";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "@/app/store/slices/usuarioSlice";
+import { RootState } from "@/app/store/store";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -13,6 +16,9 @@ export default function LoginScreen() {
   const { login } = useAuth();
   const { theme } = useTheme();
   const themeStyles = theme === "dark" ? darkTheme : lightTheme;
+  
+  const dispatch = useDispatch();
+  const usuario = useSelector((state: RootState) => state.usuario);
 
   const handleLogin = async () => {
     console.log("Verificando correo:", email);
@@ -25,6 +31,7 @@ export default function LoginScreen() {
 
     try {
       await login(email);
+      dispatch(setUser({ email }));
       router.replace("/home");
     } catch (error) {
       setErrorMessage("No se pudo iniciar sesión. Verifica tu correo.");
@@ -33,12 +40,8 @@ export default function LoginScreen() {
 
   return (
     <View style={[themeStyles.container, styles.container]}>
-      <Image
-        source={require("../assets/images/profilepic.jpg")}
-        style={styles.avatar}
-      />
+      <Image source={require("../assets/images/profilepic.jpg")} style={styles.avatar} />
       <Text style={themeStyles.title}>{i18n.t("welcome")}</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
@@ -48,13 +51,10 @@ export default function LoginScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-
       {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.googleButton} onPress={() => { }}>
         <Image
           source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" }}
@@ -62,7 +62,6 @@ export default function LoginScreen() {
         />
         <Text style={styles.buttonText}>Ingresar con Google</Text>
       </TouchableOpacity>
-
       <TouchableOpacity onPress={() => router.push("/register")}>
         <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
