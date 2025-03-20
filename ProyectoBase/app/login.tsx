@@ -13,10 +13,10 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
-  const { login } = useAuth();
+  const auth = useAuth();
   const { theme } = useTheme();
   const themeStyles = theme === "dark" ? darkTheme : lightTheme;
-  
+
   const dispatch = useDispatch();
   const usuario = useSelector((state: RootState) => state.usuario);
 
@@ -29,11 +29,18 @@ export default function LoginScreen() {
       return;
     }
 
+    if (!auth?.login) {
+      console.error("El contexto de autenticación no está disponible.");
+      setErrorMessage("Error en la autenticación. Intenta más tarde.");
+      return;
+    }
+
     try {
-      await login(email);
+      await auth.login(email);
       dispatch(setUser({ email }));
       router.replace("/home");
     } catch (error) {
+      console.error("Error en el login:", error);
       setErrorMessage("No se pudo iniciar sesión. Verifica tu correo.");
     }
   };

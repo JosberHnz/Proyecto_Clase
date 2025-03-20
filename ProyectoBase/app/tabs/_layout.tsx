@@ -1,28 +1,28 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Stack } from "expo-router";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
-export default function Layout() {
+export default function RootLayout() {
     return (
-        <Tabs
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName: keyof typeof Ionicons.glyphMap = "help";
-
-                    if (route.name === "index") {
-                        iconName = focused ? "home" : "home-outline";
-                    } else if (route.name === "profile") {
-                        iconName = focused ? "person" : "person-outline";
-                    } else if (route.name === "settings") {
-                        iconName = focused ? "settings" : "settings-outline";
-                    }
-
-                    return <Ionicons name={iconName} size={size || 24} color={color} />;
-                },
-                tabBarActiveTintColor: "blue",
-                tabBarInactiveTintColor: "gray",
-                headerShown: false,
-            })}
-        />
+        <Provider store={store}>
+            <ThemeProvider>
+                <AuthProvider>
+                    <LanguageProvider>
+                        <Stack
+                            screenOptions={{
+                                headerShown: false,
+                            }}
+                        />
+                    </LanguageProvider>
+                </AuthProvider>
+            </ThemeProvider>
+        </Provider>
     );
 }
+
+
+
 
